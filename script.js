@@ -1,6 +1,6 @@
 // ======================================
-// TBOLT TEXT TO VOICE
-// Simple Male / Female Voice Selection
+// TEXT TO VOICE CONVERTER
+// Browser Speech Synthesis Engine
 // ======================================
 
 const textInput = document.getElementById("textInput");
@@ -21,77 +21,140 @@ const pitchControl = document.getElementById("pitchControl");
 const speedValue = document.getElementById("speedValue");
 const pitchValue = document.getElementById("pitchValue");
 
+
+// ======================================
+// VARIABLES
+// ======================================
+
 let availableVoices = [];
-let selectedVoice = null;
 let currentUtterance = null;
 
 
 // ======================================
-// IDENTIFY VOICE GENDER FROM ITS NAME
+// LOAD AVAILABLE VOICES
 // ======================================
 
-function detectGender(voice) {
+function loadVoices() {
 
-    const name = voice.name.toLowerCase();
+    availableVoices = window.speechSynthesis.getVoices();
 
-    const femaleNames = [
-        "female", "zira", "jenny", "aria",
-        "samantha", "susan", "hazel",
-        "heera", "swara", "kalpana",
-        "aditi", "neerja", "pallavi",
-        "raveena", "eva", "michelle",
-        "sara", "linda", "natasha"
-    ];
+    voiceSelect.innerHTML = "";
 
-    const maleNames = [
-        "male", "david", "mark", "guy",
-        "daniel", "james", "ryan",
-        "christopher", "eric", "brian",
-        "thomas", "george", "richard",
-        "madhur", "ravi", "aaron",
-        "alexander", "arthur", "oliver"
-    ];
+    if (availableVoices.length === 0) {
 
-    if (femaleNames.some(n => name.includes(n))) {
-        return "female";
+        const option = document.createElement("option");
+        option.textContent = "No voices available";
+        option.value = "";
+
+        voiceSelect.appendChild(option);
+
+        return;
     }
 
-    if (maleNames.some(n => name.includes(n))) {
-        return "male";
-    }
+    availableVoices.forEach((voice, index) => {
 
-    return "unknown";
+        const option = document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+            voice.name + " (" + voice.lang + ")";
+
+        voiceSelect.appendChild(option);
+
+    });
+
+    updateLanguageOptions();
+
 }
 
 
 // ======================================
-// LOAD LANGUAGES
+// LANGUAGE FILTER
+// ======================================
+
+function updateLanguageOptions() {
+
+    const selectedLanguage = languageSelect.value;
+
+    voiceSelect.innerHTML = "";
+
+    const filteredVoices = availableVoices
+        .map((voice, index) => ({
+            voice,
+            index
+        }))
+        .filter(item => {
+
+            if (selectedLanguage === "all") {
+                return true;
+            }
+
+            return item.voice.lang.toLowerCase()
+                .startsWith(selectedLanguage.toLowerCase());
+
+        });
+
+    if (filteredVoices.length === 0) {
+
+        const option = document.createElement("option");
+
+        option.textContent = "No voices available for this language";
+        option.value = "";
+
+        voiceSelect.appendChild(option);
+
+        return;
+    }
+
+    filteredVoices.forEach(item => {
+
+        const option = document.createElement("option");
+
+        option.value = item.index;
+
+        option.textContent =
+            item.voice.name + " (" + item.voice.lang + ")";
+
+        voiceSelect.appendChild(option);
+
+    });
+
+}
+
+
+// ======================================
+// LOAD LANGUAGE LIST
 // ======================================
 
 function loadLanguages() {
 
-    const previousLanguage = languageSelect.value;
+    const languages = new Map();
 
-    const languages = [
-        ...new Set(
-            availableVoices.map(v => v.lang.split("-")[0])
-        )
-    ].sort();
+    availableVoices.forEach(voice => {
+
+        const languageCode = voice.lang.split("-")[0];
+
+        if (!languages.has(languageCode)) {
+
+            languages.set(
+                languageCode,
+                languageCode
+            );
+
+        }
+
+    });
 
     const languageNames = new Intl.DisplayNames(
         [navigator.language || "en"],
         { type: "language" }
     );
 
-    languageSelect.innerHTML = "";
+    languageSelect.innerHTML =
+        '<option value="all">All Available Voices</option>';
 
-    const allOption = document.createElement("option");
-    allOption.value = "all";
-    allOption.textContent = "All Languages";
-
-    languageSelect.appendChild(allOption);
-
-    languages.forEach(code => {
+    [...languages.keys()].sort().forEach(code => {
 
         const option = document.createElement("option");
 
@@ -104,130 +167,8 @@ function loadLanguages() {
         }
 
         languageSelect.appendChild(option);
-    });
-
-    if (languages.includes(previousLanguage)) {
-        languageSelect.value = previousLanguage;
-    } else {
-        languageSelect.value = "all";
-    }
-
-}
-
-
-// ======================================
-// UPDATE MALE / FEMALE VOICES
-// ======================================
-
-function updateVoiceOptions() {
-
-    const language = languageSelect.value;
-
-    voiceSelect.innerHTML = "";
-
-    const filteredVoices = availableVoices.filter(voice => {
-
-        return language === "all" ||
-            voice.lang.toLowerCase().startsWith(
-                language.toLowerCase() + "-"
-            ) ||
-            voice.lang.toLowerCase() === language.toLowerCase();
 
     });
-
-    const maleVoice = filteredVoices.find(
-        voice => detectGender(voice) === "male"
-    );
-
-    const femaleVoice = filteredVoices.find(
-        voice => detectGender(voice) === "female"
-    );
-
-    const options = [
-        { gender: "male", voice: maleVoice },
-        { gender: "female", voice: femaleVoice }
-    ];
-
-    options.forEach(item => {
-
-        if (!item.voice) return;
-
-        const option = document.createElement("option");
-
-        option.value = item.gender;
-
-        option.textContent =
-            item.gender === "male"
-                ? "Male Voice"
-                : "Female Voice";
-
-        voiceSelect.appendChild(option);
-
-    });
-
-    if (voiceSelect.options.length === 0) {
-
-        const option = document.createElement("option");
-
-        option.value = "";
-        option.textContent = "No matching voices available";
-
-        voiceSelect.appendChild(option);
-
-        selectedVoice = null;
-
-        return;
-    }
-
-    voiceSelect.selectedIndex = 0;
-
-    updateSelectedVoice();
-
-}
-
-
-// ======================================
-// UPDATE SELECTED VOICE
-// ======================================
-
-function updateSelectedVoice() {
-
-    const gender = voiceSelect.value;
-    const language = languageSelect.value;
-
-    const filteredVoices = availableVoices.filter(voice => {
-
-        return language === "all" ||
-            voice.lang.toLowerCase().startsWith(
-                language.toLowerCase() + "-"
-            ) ||
-            voice.lang.toLowerCase() === language.toLowerCase();
-
-    });
-
-    selectedVoice = filteredVoices.find(
-        voice => detectGender(voice) === gender
-    );
-
-}
-
-
-// ======================================
-// LOAD DEVICE VOICES
-// ======================================
-
-function loadVoices() {
-
-    availableVoices = window.speechSynthesis.getVoices();
-
-    if (!availableVoices.length) return;
-
-    loadLanguages();
-
-    updateVoiceOptions();
-
-    statusMessage.textContent =
-        "Voices loaded successfully.";
 
 }
 
@@ -269,36 +210,6 @@ pitchControl.addEventListener("input", () => {
 
 
 // ======================================
-// LANGUAGE CHANGE
-// ======================================
-
-languageSelect.addEventListener("change", () => {
-
-    window.speechSynthesis.cancel();
-
-    updateVoiceOptions();
-
-    statusMessage.textContent =
-        "Language updated. Select your voice.";
-
-});
-
-
-// ======================================
-// VOICE CHANGE
-// ======================================
-
-voiceSelect.addEventListener("change", () => {
-
-    updateSelectedVoice();
-
-    statusMessage.textContent =
-        "Voice selection updated.";
-
-});
-
-
-// ======================================
 // GENERATE VOICE
 // ======================================
 
@@ -312,22 +223,30 @@ speakBtn.addEventListener("click", () => {
             "Please enter some text first.";
 
         return;
+
     }
 
-    if (!selectedVoice) {
+    if (!availableVoices.length) {
 
         statusMessage.textContent =
-            "Selected voice is not available on this device.";
+            "No voices available on this device.";
 
         return;
+
     }
 
+    // Stop previous speech
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
 
-    utterance.voice = selectedVoice;
-    utterance.lang = selectedVoice.lang;
+    const selectedIndex = Number(voiceSelect.value);
+
+    const selectedVoice = availableVoices[selectedIndex];
+
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
 
     utterance.rate = Number(speedControl.value);
     utterance.pitch = Number(pitchControl.value);
@@ -337,7 +256,7 @@ speakBtn.addEventListener("click", () => {
     utterance.onstart = () => {
 
         statusMessage.textContent =
-            "Speaking...";
+            "Speaking your text...";
 
     };
 
@@ -378,7 +297,8 @@ pauseBtn.addEventListener("click", () => {
 
             pauseBtn.textContent = "⏸ Pause";
 
-            statusMessage.textContent = "Speech resumed.";
+            statusMessage.textContent =
+                "Speech resumed.";
 
         } else {
 
@@ -386,7 +306,8 @@ pauseBtn.addEventListener("click", () => {
 
             pauseBtn.textContent = "▶ Resume";
 
-            statusMessage.textContent = "Speech paused.";
+            statusMessage.textContent =
+                "Speech paused.";
 
         }
 
@@ -396,7 +317,7 @@ pauseBtn.addEventListener("click", () => {
 
 
 // ======================================
-// STOP
+// STOP SPEECH
 // ======================================
 
 stopBtn.addEventListener("click", () => {
@@ -407,13 +328,14 @@ stopBtn.addEventListener("click", () => {
 
     pauseBtn.textContent = "⏸ Pause";
 
-    statusMessage.textContent = "Speech stopped.";
+    statusMessage.textContent =
+        "Speech stopped.";
 
 });
 
 
 // ======================================
-// CLEAR
+// CLEAR TEXT
 // ======================================
 
 clearBtn.addEventListener("click", () => {
@@ -428,15 +350,44 @@ clearBtn.addEventListener("click", () => {
 
     pauseBtn.textContent = "⏸ Pause";
 
-    statusMessage.textContent = "Text cleared.";
+    statusMessage.textContent =
+        "Text cleared. Ready for new text.";
 
 });
 
 
 // ======================================
-// INITIALIZE
+// LANGUAGE CHANGE
+// ======================================
+
+languageSelect.addEventListener("change", () => {
+
+    window.speechSynthesis.cancel();
+
+    updateLanguageOptions();
+
+    statusMessage.textContent =
+        "Language filter updated.";
+
+});
+
+
+// ======================================
+// INITIALIZE VOICES
 // ======================================
 
 loadVoices();
 
-window.speechSynthesis.onvoiceschanged = loadVoices;
+loadLanguages();
+
+if ("onvoiceschanged" in window.speechSynthesis) {
+
+    window.speechSynthesis.onvoiceschanged = () => {
+
+        loadVoices();
+
+        loadLanguages();
+
+    };
+
+    }
