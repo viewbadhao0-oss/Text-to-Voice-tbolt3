@@ -1,0 +1,381 @@
+
+/* =========================
+   GLOBAL SETTINGS
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #090b18;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    width: 100%;
+    padding: 22px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #202239;
+    background: #0d1020;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    background: #7848ff;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    font-size: 23px;
+}
+
+.purple {
+    color: #a68aff;
+}
+
+.free-badge {
+    background: #21183f;
+    color: #bba7ff;
+    border: 1px solid #513a91;
+    padding: 9px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.main-container {
+    max-width: 1250px;
+    margin: 65px auto;
+    padding: 0 25px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* =========================
+   ADVERTISEMENT SPACE
+========================= */
+
+.ad-container {
+    background: #111426;
+    border: 1px dashed #414563;
+    border-radius: 15px;
+    min-height: 380px;
+    padding: 15px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ad-label {
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    color: #777e9e;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ad-content {
+    text-align: center;
+    color: #777e9e;
+}
+
+.ad-icon {
+    display: inline-block;
+    border: 1px solid #555b7d;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.ad-content p {
+    font-size: 14px;
+}
+
+/* =========================
+   CONVERTER PANEL
+========================= */
+
+.converter {
+    background: #111426;
+    border: 1px solid #262b48;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+}
+
+.section-heading {
+    margin-bottom: 32px;
+}
+
+.section-heading h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.section-heading p {
+    color: #9298b4;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* =========================
+   LABELS AND INPUTS
+========================= */
+
+.field-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 23px 0 12px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #e1e2ef;
+}
+
+.select-box {
+    width: 100%;
+    padding: 14px;
+    background: #191e35;
+    color: #ffffff;
+    border: 1px solid #333956;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+}
+
+.select-box:focus,
+textarea:focus {
+    border-color: #946cff;
+}
+
+textarea {
+    width: 100%;
+    min-height: 190px;
+    resize: vertical;
+    padding: 18px;
+    background: #191e35;
+    color: white;
+    border: 1px solid #333956;
+    border-radius: 12px;
+    outline: none;
+    font-size: 15px;
+    line-height: 1.7;
+    font-family: Arial, sans-serif;
+}
+
+textarea::placeholder {
+    color: #737b99;
+}
+
+.clear-btn {
+    border: none;
+    background: transparent;
+    color: #aa91ff;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.character-info {
+    text-align: right;
+    color: #8188a6;
+    font-size: 12px;
+    margin-top: 9px;
+}
+
+/* =========================
+   CONTROLS
+========================= */
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #946cff;
+    cursor: pointer;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn {
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.primary-btn {
+    flex: 1;
+    border: none;
+    color: white;
+    background: linear-gradient(120deg, #7848ff, #a05cff);
+    min-width: 160px;
+}
+
+.primary-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    border: 1px solid #3b4160;
+    color: #e0def1;
+    background: #1a1f36;
+}
+
+.secondary-btn:hover {
+    background: #292e4a;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status-message {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #a99be0;
+    min-height: 20px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    text-align: center;
+    padding: 25px;
+    color: #737b99;
+    border-top: 1px solid #202239;
+    font-size: 13px;
+    margin-top: 70px;
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 850px) {
+
+    .main-container {
+        grid-template-columns: 1fr;
+        margin: 35px auto;
+    }
+
+    .ad-container {
+        min-height: 130px;
+        order: 2;
+    }
+
+    .converter {
+        order: 1;
+    }
+
+    .controls-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .header {
+        padding: 17px 5%;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .free-badge {
+        font-size: 11px;
+        padding: 8px 10px;
+    }
+
+    .main-container {
+        padding: 0 13px;
+        margin: 25px auto;
+        gap: 20px;
+    }
+
+    .converter {
+        padding: 22px 17px;
+        border-radius: 15px;
+    }
+
+    .section-heading h1 {
+        font-size: 23px;
+    }
+
+    .controls-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        width: 100%;
+    }
+}
